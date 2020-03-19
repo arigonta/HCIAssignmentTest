@@ -1,0 +1,6 @@
+framework module Pods_HCIAssignmentTest_HCIAssignmentTestUITests {
+  umbrella header "Pods-HCIAssignmentTest-HCIAssignmentTestUITests-umbrella.h"
+
+  export *
+  module * { export * }
+}
