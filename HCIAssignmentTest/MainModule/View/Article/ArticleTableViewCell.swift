@@ -17,13 +17,7 @@ class ArticleTableViewCell: UITableViewCell {
         super.awakeFromNib()
         //MARK: To Style
         //setup image
-        imageArticle?.clipsToBounds = true
-        imageArticle?.layer.cornerRadius = 4
-        if #available(iOS 11.0, *) {
-            imageArticle?.layer.maskedCorners = [.layerMaxXMinYCorner, .layerMinXMinYCorner]
-        } else {
-            // Fallback on earlier versions
-        }
+        imageArticle?.roundCornersWithLayerMask(cornerRadii: 4, corners: [.topLeft,.topRight])
         
         //setup content view
         contentViewArticle?.layer.cornerRadius = 4

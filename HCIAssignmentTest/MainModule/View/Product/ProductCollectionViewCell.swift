@@ -10,5 +10,4 @@ import UIKit
 class ProductCollectionViewCell: UICollectionViewCell {
     @IBOutlet weak var image: UIImageView!
     @IBOutlet weak var titleLabel: UILabel!
-    @IBOutlet weak var widthLabel: NSLayoutConstraint!
 }

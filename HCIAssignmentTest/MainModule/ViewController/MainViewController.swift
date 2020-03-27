@@ -47,7 +47,6 @@ class MainViewController: UIViewController {
             switch result {
             case .success(let section):
                 self.tempSectionPage = section
-                
                 //filter item for section 'articles'
                 let itemsArticle = section.filter { $0.section == "articles" }
                 itemsArticle.forEach { (item) in
@@ -59,8 +58,15 @@ class MainViewController: UIViewController {
                 itemsProduct.forEach { (item) in
                     self.tempItemProduct = item.items ?? []
                 }
-                self.isNotSkeleton = true
+                
                 self.tableViewHCI.reloadData()
+                
+                DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
+                    self.isNotSkeleton = true
+                    self.tableViewHCI.hideSkeleton()
+                    self.tableViewHCI.reloadData()
+                }
+                
             case .failure(let err):
                 print(err)
                 self.alertLostConnection()
@@ -93,13 +99,14 @@ extension MainViewController: UITableViewDataSource {
         case .products :
             if let productCell = tableView.dequeueReusableCell(withIdentifier: "ProductTableViewCell", for: indexPath)as? ProductTableViewCell {
                 if isNotSkeleton {
-                    productCell.hideSkeleton()
+                    productCell.contentViewProduct?.hideSkeleton()
                     productCell.itemsProduct = tempItemProduct
                     productCell.delegate = self
                     productCell.selectionStyle = .none
+                    productCell.isHiddenSkeletonView = isNotSkeleton
                 } else {
-                    //setup skeleton view
-                    productCell.contentViewProduct?.isSkeletonable = true
+                    //MARK: Setup skeleton view
+                    productCell.contentViewProduct?.isSkeletonable = !isNotSkeleton
                     productCell.contentViewProduct?.showAnimatedGradientSkeleton()
                 }
                 return productCell
@@ -138,7 +145,7 @@ extension MainViewController: UITableViewDelegate {
         let productSectionType = sections.init(index: indexPath.section)
         switch productSectionType {
         case .products :
-            return 160
+            return 190
         default:
             return 200
         }
@@ -158,7 +165,7 @@ extension MainViewController: UITableViewDelegate {
             labelSectionArticles.textColor = UIColor.black
             headerViewArticles.addSubview(labelSectionArticles)
             
-            return headerViewArticles
+            return isNotSkeleton ? headerViewArticles : UIView.init()
         }
     }
 }

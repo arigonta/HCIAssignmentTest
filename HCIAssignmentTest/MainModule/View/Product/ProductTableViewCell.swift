@@ -17,6 +17,11 @@ class ProductTableViewCell: UITableViewCell {
     var itemsProduct: [Item] = []
     @IBOutlet weak var contentViewProduct: UIView?
     var delegate: productTableViewCellToMainViewController?
+    var isHiddenSkeletonView: Bool = false {
+        didSet {
+            collectionViewProduct?.reloadData()
+        }
+    }
     
     override func awakeFromNib() {
         super.awakeFromNib()
@@ -37,14 +42,13 @@ class ProductTableViewCell: UITableViewCell {
     }
 }
 
-extension ProductTableViewCell: UICollectionViewDataSource, UICollectionViewDelegate {
+extension ProductTableViewCell: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return itemsProduct.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         if let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "ProductCollectionViewCell", for: indexPath)as? ProductCollectionViewCell {
-            cell.widthLabel.constant = collectionView.bounds.width/3.2
             cell.titleLabel.text = itemsProduct[indexPath.row].productName
             if let url = itemsProduct[indexPath.row].productImage {
                 cell.image.kf.setImage(with: url)
@@ -54,10 +58,18 @@ extension ProductTableViewCell: UICollectionViewDataSource, UICollectionViewDele
             return UICollectionViewCell.init()
         }
     }
-    
+}
+
+extension ProductTableViewCell: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         if let url = itemsProduct[indexPath.row].link {
             delegate?.presentSVC(url)
         }
+    }
+}
+
+extension ProductTableViewCell: UICollectionViewDelegateFlowLayout {
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        return CGSize(width: collectionView.frame.width/3, height: 70)
     }
 }
