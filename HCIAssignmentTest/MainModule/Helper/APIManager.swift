@@ -6,7 +6,6 @@
 //
 
 import Foundation
-import Alamofire
 
 class APIManager {
     static let shared = APIManager()
